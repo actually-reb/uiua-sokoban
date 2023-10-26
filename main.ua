@@ -4,11 +4,14 @@ Load ← (
   ↘1⬚@ ⊐⊜∘≠,@\n
 )
 
+# -- cmd
 Cmd ← (|0
-  ⊢⍥(
-    +×32×⊃(≥@A)(≤@Z). &rs 1 0
-    ⊚∊⊢∶["wk8" "dl6" "sj2" "ah4"]
-    ;⎋>0⧻.
+  ⊙;⊢⍥(
+    +×32×⊃(≥@A)(≤@Z). &rs 1 0      # char
+    ⊚∊⊢∶["wk8" "dl6" "sj2" "ah4"]. # [mov] char
+    ;⎋>0⧻.                         # char (ret mov)
+    ⊚∊⊢∶["q" "r"].                 # [meta] char
+    ;⎋>0⧻.¯+1                      # char (ret meta)
   )∞
 )
 
@@ -29,24 +32,38 @@ MovSet ← ["$ "_" $"
           "+."_".+"]
 # cmd lvl -- lvl
 Mov ← (
-  ⊡∶[¯1_0 0_1 1_0 0_¯1]            # dir lvl
-  ⊙(♭⊜∘♭∶/⊂⇡△.+⊃(⌕@@)(⌕@+).)       # dir player_yx lvl
-  ⊡,,⍉+⍉⊞×⇡3                       # chars yx_list lvl
-  ⍜'↘1(?(;∶⊡1⊢)(;)>0⧻.▽∊⊙.,MovSet) # chars yx_list lvl
-  ⍜'↙2(?(;∶⊡1⊢)(;)>0⧻.▽∊⊙.,MovSet) # chars yx_list lvl
-  ⍜⊙⊡∘                             # lvl
+  ⊡∶[¯1_0 0_1 1_0 0_¯1]          # dir lvl
+  ⊙(♭⊜∘♭∶/⊂⇡△.+⊃(⌕@@)(⌕@+).)     # dir player_yx lvl
+  ⊡,,⍉+⍉⊞×⇡3                     # chars yx_list lvl
+  ⍜'↘1(?(;∶⊡1⊢);>0⧻.▽∊⊙.,MovSet) # chars yx_list lvl
+  ⍜'↙2(?(;∶⊡1⊢);>0⧻.▽∊⊙.,MovSet) # chars yx_list lvl
+  ⊙;⍜⊙⊡∘                         # lvl
 )
 # note: add bounds check
 
+# lvl -- win
+Win ← ¬/↥∊@$
+
+# lvl --
 Draw ← &pf↯+1∶@\n;≡(&p.)∶↥0-⊢△,⊢&ts
 
 Main ← (|0.0
   &raw1
-  Load "microban.txt"
+  .Load "microban.txt"
   ⍥(
     Draw.
-    Mov Cmd.
+    <0.Cmd
+    ?(
+      # meta
+      -1¯
+      (⎋1|.;)
+    ) (
+      # move
+      Mov
+      ?(⎋1&p"## You win!")∘ Win.
+    )
   )∞
+  ;;
 )
 
 Main
