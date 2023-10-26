@@ -12,13 +12,31 @@ Cmd ← (|0
   )∞
 )
 
+# tiles:
+# @ player
+# # wall
+# $ crate
+# . spot
+# + player on spot
+# * crate on spot
+MovSet ← ["$ "_" $"
+          "$."_" *"
+          "* "_".$"
+          "*."_".*"
+          "@ "_" @"
+          "+ "_".@"
+          "@."_" +"
+          "+."_".+"]
 # cmd lvl -- lvl
 Mov ← (
-  ⊡∶[¯1_0 0_1 1_0 0_¯1]   # dir lvl
-  ⊙∶+,⊙(♭⊜∘♭∶/⊂⇡△.⌕@@.)   # new_yx lvl player_yx
-  ≠@ ⬚@#⊡-×<0,△,,,        # is_blocked new_yx lvl player_yx
-  ?(;∶;)(⍜⊡(@ ;)∶⍜⊡(@@;)) # lvl
+  ⊡∶[¯1_0 0_1 1_0 0_¯1]            # dir lvl
+  ⊙(♭⊜∘♭∶/⊂⇡△.+⊃(⌕@@)(⌕@+).)       # dir player_yx lvl
+  ⊡,,⍉+⍉⊞×⇡3                       # chars yx_list lvl
+  ⍜'↘1(?(;∶⊡1⊢)(;)>0⧻.▽∊⊙.,MovSet) # chars yx_list lvl
+  ⍜'↙2(?(;∶⊡1⊢)(;)>0⧻.▽∊⊙.,MovSet) # chars yx_list lvl
+  ⍜⊙⊡∘                             # lvl
 )
+# note: add bounds check
 
 Draw ← &pf↯+1∶@\n;≡(&p.)∶↥0-⊢△,⊢&ts
 
