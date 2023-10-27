@@ -1,7 +1,7 @@
 # file -- lvl
 Load ← (
-  ⊢⊜□≠,@;&fras
-  ↘1⬚@ ⊐⊜∘≠,@\n
+  ⊜□≠,@;&fras
+  ⊐∵(↘1⬚@ ⊐⊜∘≠,@\n)
 )
 
 # -- cmd
@@ -10,7 +10,7 @@ Cmd ← (|0
     +×32×⊃(≥@A)(≤@Z). &rs 1 0      # char
     ⊚∊⊢∶["wk8" "dl6" "sj2" "ah4"]. # [mov] char
     ;⎋>0⧻.                         # char (ret mov)
-    ⊚∊⊢∶["q" "r"].                 # [meta] char
+    ⊚∊⊢∶["qq" "rr" "\r\n"].        # [meta] char
     ;;⎋>0⧻.¯+1                     # (ret meta)
   )∞
 )
@@ -41,8 +41,8 @@ Mov ← (
   ⊙;⍜⊙⊡∘ ∩↙,∶⊗@#.                # lvl
 )
 # bounds checking at the end takes advantage of the fact
-# that nothing can happen if @# appears.
-# would be easier with ⍜⊙⬚@#⊡∘
+# that nothing can happen when @# first appears.
+# would be easier with ⍜⬚@#⊡
 
 # lvl -- win
 Win ← ¬/↥∊@$
@@ -50,9 +50,9 @@ Win ← ¬/↥∊@$
 # lvl --
 Draw ← &pf↯∶@\n;≡(&p.&pf@ )∶↥0-⊢△,⊢&ts
 
-Main ← (|0.0
-  &raw1
-  .Load "microban.txt"
+# lvl --
+Game ← (|1.0
+  .
   ⍥(
     Draw.
     <0.Cmd
@@ -69,4 +69,26 @@ Main ← (|0.0
   ;;
 )
 
-Main
+# lvldir --
+Menu ← (|1.0
+  0_0⧻. # [cursor lvlnum] lvllen lvldir
+  ⍥(
+    &p "uiua-sokoban"
+    {"  level" "  quit"}
+    ⍜(⊢⊔⊡)(@>;)⊢,
+    ⍜(⊔⊢)(⊂∶$" < _ >"+1⊢⇌,)
+    ;⊐≡(&p.)
+    &pf↯∶@\n-3⊢&ts
+    =¯3.Cmd
+    ?(⎋(0⊃(Game⊔⊡⊙;⊢⇌)(⊙⊙∘)|1)⊢.;)(
+      ↧⊃(≤3)(≥0).
+      ?(+⊡∶[¯1_0 0_1 1_0 0_¯1]);
+      ◿⊂2,
+    )
+  )∞
+  ;;;
+)
+
+# Main
+&raw1
+Menu Load "microban.txt"
