@@ -11,7 +11,7 @@ Cmd ← (|0
     ⊚∊⊢∶["wk8" "dl6" "sj2" "ah4"]. # [mov] char
     ;⎋>0⧻.                         # char (ret mov)
     ⊚∊⊢∶["q" "r"].                 # [meta] char
-    ;⎋>0⧻.¯+1                      # char (ret meta)
+    ;;⎋>0⧻.¯+1                     # (ret meta)
   )∞
 )
 
@@ -34,18 +34,21 @@ MovSet ← ["$ "_" $"
 Mov ← (
   ⊡∶[¯1_0 0_1 1_0 0_¯1]          # dir lvl
   ⊙(♭⊜∘♭∶/⊂⇡△.+⊃(⌕@@)(⌕@+).)     # dir player_yx lvl
-  ⊡,,⍉+⍉⊞×⇡3                     # chars yx_list lvl
+  ⍉-×⊓'<0△,,+⍉⊞×⇡3               # yx_list lvl
+  ⬚@#⊡,,                         # chars yx_list lvl
   ⍜'↘1(?(;∶⊡1⊢);>0⧻.▽∊⊙.,MovSet) # chars yx_list lvl
   ⍜'↙2(?(;∶⊡1⊢);>0⧻.▽∊⊙.,MovSet) # chars yx_list lvl
-  ⊙;⍜⊙⊡∘                         # lvl
+  ⊙;⍜⊙⊡∘ ∩↙,∶⊗@#.                # lvl
 )
-# note: add bounds check
+# bounds checking at the end takes advantage of the fact
+# that nothing can happen if @# appears.
+# would be easier with ⍜⊙⬚@#⊡∘
 
 # lvl -- win
 Win ← ¬/↥∊@$
 
 # lvl --
-Draw ← &pf↯+1∶@\n;≡(&p.)∶↥0-⊢△,⊢&ts
+Draw ← &pf↯∶@\n;≡(&p.&pf@ )∶↥0-⊢△,⊢&ts
 
 Main ← (|0.0
   &raw1
